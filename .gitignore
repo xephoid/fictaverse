@@ -1,0 +1,6 @@
+.classpath
+.project
+frontend/node_modules/
+project/project/
+project/target/
+target/
