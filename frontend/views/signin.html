@@ -1,0 +1,13 @@
+<% include header.html %>
+
+<script src="/js/signin.js"></script>
+<div ng-controller="SignInCtrl">
+	<form ng-submit="signIn()">
+		<input type="text" name="email" placeholder="Email" ng-model="email" />
+		<input type="password" name="password" placeholder="Password" ng-model="password" />
+		<input type="submit" value="Login" class="btn-primary" />
+		<div id="errorMessage" style="color:red;"></div>
+	</form>
+</div>
+
+<% include footer.html %>
