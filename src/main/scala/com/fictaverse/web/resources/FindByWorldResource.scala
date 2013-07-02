@@ -28,15 +28,10 @@ class FindByWorldResource extends FictaResource {
   @Timed
   def findAllByWorld(
       @QueryParam("sessionId") sessionId: Option[String],
-      @QueryParam("worldId") worldId: Option[String],
       @QueryParam("kind") kind: Option[String]): List[FictaWebDto] = {
-    require(sessionId.isDefined, "Session is missing!")
     require(kind.isDefined, "Kind is missing!")
-    require(worldId.isDefined, "World is missing!")
-    validateSession(sessionId.get)
-    val world = FWorld.find(worldId.get).getOrElse {
-    	throw new IllegalArgumentException("Invalid world!")
-    }
+    val session = validateSession(sessionId)
+    val world = session.world
     kind.get match {
       case "world" => List(FObjectDto(world))
       case "story" => world.stories.map(FObjectDto(_)).toList

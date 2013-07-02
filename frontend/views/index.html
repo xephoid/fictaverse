@@ -1,5 +1,12 @@
 <% include header.html %>
-
-<div>Welcome!</div>
-
+<div id="mainContainer">
+	<div id="worldHeader">
+		<%= session.world.name %>
+	</div>
+	<div id="navigationContainer">
+	<% include navbar.html %>
+	</div>
+	<div id="editContainer">
+	</div>
+</div>
 <% include footer.html %>

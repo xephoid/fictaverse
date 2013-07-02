@@ -20,5 +20,5 @@ class FictaWebConfig extends Configuration {
   
   @NotEmpty
   @JsonProperty
-  var aesKey: String = "DEV_ONLY"
+  var aesKey: String = "42f33ef1c821ddf8d9ef9314f0497f4b"
 }

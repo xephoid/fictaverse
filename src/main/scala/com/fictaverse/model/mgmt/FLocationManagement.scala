@@ -23,13 +23,13 @@ with FAssociableSuppliment {
   def associable = location
   
   def saveOrUpdate(
-      world: Option[FWorld],
-      name: Option[String],
-      firstImpression: Option[String],
-      description: Option[String],
-      aliases: Option[List[String]],
-      tags: Option[List[FTag]],
-      associations: Option[List[FAssociation]]) {
+      world: Option[FWorld] = None,
+      name: Option[String] = None,
+      firstImpression: Option[String] = None,
+      description: Option[String] = None,
+      aliases: Option[List[String]] = None,
+      tags: Option[List[FTag]] = None,
+      associations: Option[List[FAssociation]] = None) {
     update()
     location.world = world.getOrElse(location.world)
     location.name = name.getOrElse(location.name)

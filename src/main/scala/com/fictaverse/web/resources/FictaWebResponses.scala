@@ -42,12 +42,17 @@ case class FSessionDto (
     id: String, 
     userId: String, 
     state: String, 
-    world: FObjectDto
+    world: FObjectDto,
+    activeKind: String
 ) extends FictaWebDto("session")
 
 object FSessionDto {
   def apply(session: FSession): FSessionDto = FSessionDto(
-      session.externalId,      session.user.externalId,      session.state.toString,      FObjectDto(session.world)
+      session.externalId,
+      session.user.externalId,
+      session.state.toString,
+      FObjectDto(session.world),
+      session.activeKind
   )
 }
 

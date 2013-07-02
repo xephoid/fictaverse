@@ -1,0 +1,43 @@
+<div id="sideNavigation">
+	<ul>
+		<% kinds.forEach(function(kind){ %>
+		<li id="<%= kind[1] %>Nav" class="sideNavSection">
+			<a href="#">
+				<%= kind[0] %>
+			</a>
+			<div id="<%= kind[1] %>Contents" class="subNav">
+				<ul>
+					<li><a id="<%= kind[1] %>Add" href="#">Add <%= kind[1] %></a></li>
+				</ul>
+			</div>
+			<script>
+			$("#<%= kind[1] %>Nav").click(function() {
+				hideAllSubNavs("#<%= kind[1] %>Contents");
+			});
+			$("#<%= kind[1] %>Add").click(function() {
+				$.get("add/<%= kind[1] %>", function(html) {
+					replaceEditContents(html);
+				});
+			});
+			</script>
+		</li>
+		<% }) %>
+	</ul>
+</div>
+<script>
+$(function() {
+	hideAllSubNavs();
+	$("#<%= session.activeKind %>Contents").show();
+});
+
+hideAllSubNavs = function(except) {
+	$(".subNav").hide();
+	if (except) {
+		$(except).show();
+	}
+}
+
+replaceEditContents = function(html) {
+	$("#editContainer").html(html);
+}
+</script>

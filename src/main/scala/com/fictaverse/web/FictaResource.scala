@@ -6,6 +6,7 @@ import javax.ws.rs.core.Response.Status
 import com.fictaverse.web.resources.FErrorDto
 import com.fictaverse.model.mgmt.FObjectTransactions
 import com.fictaverse.model.web.FSession
+import com.fictaverse.FSessionState
 
 trait FictaResource extends FictaLogging with FObjectTransactions {
 
@@ -18,10 +19,12 @@ trait FictaResource extends FictaLogging with FObjectTransactions {
     throw new WebApplicationException(Status.BAD_REQUEST)
   }
   
-  def validateSession(sessionId: String) = {
-    val session = FSession.find(sessionId).getOrElse {
+  def validateSession(sessionId: Option[String]) = {
+    require(sessionId.isDefined, "Session is missing!")
+    val session = FSession.findOneBy("externalId" -> sessionId.get, "state" -> FSessionState.active.toString).getOrElse {
       throw new IllegalArgumentException("Invalid session!")
     }
     require(FSession.isActive(session), "Session is expired!")
+    session
   }
 }

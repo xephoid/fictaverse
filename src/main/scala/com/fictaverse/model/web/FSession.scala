@@ -14,6 +14,7 @@ class FSession extends FObject {
 
   var state: FSessionState = FSessionState.active
   var lastActivity: Date = new Date
+  var activeKind: String = "character"
   
   @Reference
   var user: FUser = null

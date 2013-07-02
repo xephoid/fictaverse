@@ -15,6 +15,7 @@ import com.fictaverse.model.traits.FAssociable
 import com.google.code.morphia.annotations.Entity
 import scala.collection.JavaConversions._
 import com.fictaverse.model.FLocation
+import com.fictaverse.model.FCharacter
 
 case class FObjectDto(
     override val kind: String,
@@ -25,7 +26,11 @@ case class FObjectDto(
     firstImpression: String,
     aliases: List[String],
     associations: List[FAssociationDto],
-    tags: List[String]
+    tags: List[String],
+
+    /* Character specific */
+    firstName: String = null,
+    lastName: String = null
 ) extends FictaWebDto(kind) {
   
   def toWorld = {
@@ -54,6 +59,18 @@ case class FObjectDto(
     setAliases(location)
     setTags(location)
     location
+  }
+  
+  def toCharacter: FCharacter = {
+    val character = new FCharacter
+    character.world = getWorld
+    character.firstName = firstName
+    character.lastName = lastName
+    setDescribabble(character)
+    setAliases(character)
+    setTags(character)
+    
+    character
   }
   
   private def getWorld: FWorld = {
@@ -121,6 +138,9 @@ object FObjectDto extends FictaLogging {
     } else {
       null
     }
+    
+    val firstName = getFieldValueIfExists[String]("firstName", obj).getOrElse(null)
+    val lastName = getFieldValueIfExists[String]("lastName", obj).getOrElse(null)
     
     FObjectDto(obj.kind, obj.externalId, worldId, name, description, firstImpression, aliases, associations, tags)
   }

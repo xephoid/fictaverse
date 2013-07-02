@@ -7,6 +7,8 @@ import com.yammer.dropwizard.config.Environment
 import com.fictaverse.FictaConfig
 import com.fictaverse.web.resources.SignInResource
 import com.fictaverse.web.resources.SecretSignupResource
+import com.fictaverse.web.resources.GetKindsResource
+import com.fictaverse.web.resources.CreateFObjectResource
 
 object FictaWebService extends ScalaService[FictaWebConfig] {
   def initialize(boot: Bootstrap[FictaWebConfig]) = {
@@ -18,5 +20,7 @@ object FictaWebService extends ScalaService[FictaWebConfig] {
     FictaConfig.webconfig = config
     env.addResource(new SignInResource)
     env.addResource(new SecretSignupResource)
+    env.addResource(new GetKindsResource)
+    env.addResource(new CreateFObjectResource)
   }
 }

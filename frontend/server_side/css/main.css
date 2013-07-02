@@ -1,0 +1,34 @@
+body {
+	padding: 0;
+	margin: 0;
+	height: 100%;
+	background-color: #eee;
+}
+
+#worldHeader {
+	font-size: 24px;
+	width: 100%;
+}
+
+#mainContainer {
+	padding-top: 25px;
+	padding-left: 50px;
+	width: 100%;
+	height: 100%;
+}
+
+#navigationContainer {
+	width: 400px;
+	float: left;
+	height: 400px;
+}
+
+#editContainer {
+	height: 400px;
+	float: left;
+	padding-top: 25px;
+}
+
+#editHeader {
+	font-size: 24px;
+}

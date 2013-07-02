@@ -44,10 +44,8 @@ trait FUserManagement extends FObjectManagement {
     // If session exists and is active expire old session
     if (Option(user.session).isDefined) {
       if (FSession.isActive(user.session)) {
-        Futures.future {
-        	user.session.state = FSessionState.expired
-        	FSession.save(user.session)
-        }
+      	user.session.state = FSessionState.expired
+      	FSession.save(user.session)
       }
     }
     user.session = new FSession
