@@ -36,7 +36,5 @@ app.use(express.static(__dirname + "/server_side/css"));
 app.use(app.router);
 
 //Start server listening on specified port
-if (!module.parent) {
-	app.listen(3000);
-	console.log("Listening on port 3000");
-}
+app.listen(3000);
+console.log("Listening on port 3000");

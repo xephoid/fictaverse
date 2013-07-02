@@ -1,0 +1,8 @@
+<div id="editHeader">
+	<%= displayAction %> <%= displayKind %>
+</div>
+<div>&nbsp;</div>
+<form method="post" action="<%= action %>/<%= kind %>/<%= obj.id %>">
+	<input type="hidden" name="kind" value="<%= kind %>" />
+	<input type="hidden" name="worldId" value="<%= session.world.id %>" />
+	<table id="<%= kind %>FieldTable">

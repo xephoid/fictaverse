@@ -21,7 +21,22 @@ function FictaAPI(host, port, http) {
 		if (method == "POST") {
 			options['data'] = params;
 		}
-
+		
+		this.doRequest(options, success, error);
+	}
+	
+	this.postData = function(action, params, body, success, error) {
+		var options = {
+				hostname: this.host,
+				port: this.port,
+				path: "/" +action+ "?" + params,
+				method: "POST",
+				headers: {"Content-Type": "application/json"}
+		};
+		this.doRequest(options, success, error, body);
+	}
+	
+	this.doRequest = function(options, success, error, body) {
 		var request = http.request(options, function(resp) {
 			resp.on("error", function(stuff) {
 				console.log("ERRROR!");
@@ -46,9 +61,13 @@ function FictaAPI(host, port, http) {
 						response: data
 					});
 				}
-		    })
+		    });
 
 		});
+		
+		if (body) {
+			request.write(body);
+		}
 		
 		request.on("error", function(e) {
 			console.log("problem with request: " + e.message);

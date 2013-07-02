@@ -5,7 +5,7 @@ import javax.ws.rs.Path
 import javax.ws.rs.Produces
 import javax.ws.rs.core.MediaType
 import javax.ws.rs.QueryParam
-import javax.ws.rs.GET
+import javax.ws.rs.POST
 import com.yammer.metrics.annotation.Timed
 import javax.ws.rs.Consumes
 import com.fictaverse.web.responses.FObjectDto
@@ -16,7 +16,7 @@ import com.fictaverse.model.FWorld
 @Consumes(Array(MediaType.APPLICATION_JSON))
 class CreateFObjectResource extends FictaResource {
 
-  @GET
+  @POST
   @Timed
   def createObject(
       @QueryParam("sessionId") sessionId: Option[String],
@@ -24,6 +24,7 @@ class CreateFObjectResource extends FictaResource {
       obj: FObjectDto) = {
     val session = validateSession(sessionId)
     require(kind.isDefined, "Kind is missing!")
+    require(Option(obj).isDefined, "Did not recieve any data! body: %s" format(obj))
     kind.get match {
       case "world" =>
         val world = obj.toWorld
@@ -43,5 +44,9 @@ class CreateFObjectResource extends FictaResource {
         //val artifact
       case _ => throw new IllegalArgumentException("Invalid kind!")
     }
+    
+    SuccessDto()
   }
+  
+  case class SuccessDto extends FictaWebDto("success")
 }

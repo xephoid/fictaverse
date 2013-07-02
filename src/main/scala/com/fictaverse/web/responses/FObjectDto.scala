@@ -85,24 +85,28 @@ case class FObjectDto(
   }
   
   private def setAliases(aliased: FMultiNamed) {
-    aliased.aliases = aliases.foldLeft(new ArrayList[String]) {
-      (list, alias) =>
-        list.add(alias)
-        list
+    if (Option(aliases).isDefined) {
+    	aliased.aliases = aliases.foldLeft(new ArrayList[String]) {
+    		(list, alias) =>
+    		list.add(alias)
+    		list
+    	}
     }
   }
   
   private def setTags(taggable: FTaggable) {
-    taggable.tags = tags.foldLeft(new ArrayList[FTag]) {
-      (list, tag) =>
-      	val ftag = FTag.findOneBy("name" -> tag).getOrElse {
-      		val newtag = new FTag
-      		newtag.name = tag
-      		// TODO: save!
-      		newtag
-      	}
-      	list.add(ftag)
-      	list
+    if (Option(tags).isDefined) {
+    	taggable.tags = tags.foldLeft(new ArrayList[FTag]) {
+    		(list, tag) =>
+    			val ftag = FTag.findOneBy("name" -> tag).getOrElse {
+    			val newtag = new FTag
+    			newtag.name = tag
+    			// TODO: save!
+    			newtag
+    		}
+    		list.add(ftag)
+    		list
+    	}
     }
   }
 }
