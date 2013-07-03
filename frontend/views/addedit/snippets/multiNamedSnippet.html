@@ -1,0 +1,15 @@
+<tr>
+	<td><label for="aliasesField">Aliases: </label></td>
+	<td>
+		<input id="aliasesField" value="<%= obj.aliases.toString() %>" />
+	</td>
+	<script>
+	$("#aliasesField").change(function() {
+		$(".alias").remove();
+		var aliases = $(this).val().split(",");
+		$(aliases).each(function (index) {
+			$("#addEditForm").append("<input type='hidden' class='alias' name='aliases[]' value='" + aliases[index].trim() + "' />");
+		});
+	});
+	</script>
+</tr>
