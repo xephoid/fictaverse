@@ -1,22 +1,21 @@
 module.exports = function(parent, options) {
 	var api = options.api;
-	parent.param("kind", function(req, res, next, kind) {
-	  if (req.kind = kind) {
-	    next();
-	  } else {
-	    next(new Error('failed to find kind!'));
-	  }
-	});
 	
 	var emptyObject = {
 		id: "",
-		name: ""
+		name: "",
+		description: "",
+		firstImpression: "",
+		aliases: [],
+		tags: [],
+		firstName: "",
+		lastName: ""
 	}
 	
 	var pageData = {}
 	
 	parent.get("/edit/:kind/:id", function(req, res) {
-		pageData.obj = {};
+		pageData.obj = req.session.obj;
 		pageData.kind = req.kind;
 		pageData.displayKind = req.kind.charAt(0).toUpperCase() + req.kind.slice(1);
 		pageData.session = req.session.json;
@@ -36,7 +35,18 @@ module.exports = function(parent, options) {
 	});
 	
 	parent.post("/doEdit/:kind/:id", function(req, res) {
-		res.redirect("/");
+		console.log(req.body);
+		api.postData(
+			"create",
+			"sessionId=" + req.session.sessionId + "&kind=" + req.kind + "&id=" + req.session.obj.id,
+			JSON.stringify(req.body),
+			function(resp) {
+				res.redirect("/");
+			},
+			function(error) {
+				res.redirect("/?msg=error");
+			}
+		);
 	});
 	
 	parent.post("/doAdd/:kind", function(req, res) {

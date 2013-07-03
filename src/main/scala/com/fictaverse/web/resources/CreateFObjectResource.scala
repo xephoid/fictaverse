@@ -10,6 +10,12 @@ import com.yammer.metrics.annotation.Timed
 import javax.ws.rs.Consumes
 import com.fictaverse.web.responses.FObjectDto
 import com.fictaverse.model.FWorld
+import com.fictaverse.model.FStory
+import com.fictaverse.model.FLocation
+import com.fictaverse.model.FCharacter
+import com.fictaverse.model.FArtifact
+import com.fictaverse.model.FAffiliation
+import com.fictaverse.model.FEvent
 
 @Path("/create")
 @Produces(Array(MediaType.APPLICATION_JSON))
@@ -21,27 +27,68 @@ class CreateFObjectResource extends FictaResource {
   def createObject(
       @QueryParam("sessionId") sessionId: Option[String],
       @QueryParam("kind") kind: Option[String],
+      @QueryParam("id") id: Option[String],
       obj: FObjectDto) = {
     val session = validateSession(sessionId)
     require(kind.isDefined, "Kind is missing!")
     require(Option(obj).isDefined, "Did not recieve any data! body: %s" format(obj))
     kind.get match {
       case "world" =>
-        val world = obj.toWorld
+        val world = obj.toWorld( id match {
+          case Some(externalId) => FWorld.findOneBy("externalId" -> externalId)
+          case None => None
+        })
         world.saveOrUpdate()
         session.world = world
-        // TODO: Update save session
+        session.save()
       case "story" =>
-        val story = obj.toStory
+        val story = obj.toStory( 
+            id match {
+            	case Some(externalId) => FStory.findOneBy("externalId" -> externalId)
+            	case None => None
+            }
+        )
         story.saveOrUpdate(world = Option(session.world))
       case "location" =>
-        val location = obj.toLocation
+        val location = obj.toLocation(
+            id match {
+            	case Some(externalId) => FLocation.findOneBy("externalId" -> externalId)
+            	case None => None
+            }
+        )
         location.saveOrUpdate(world = Option(session.world))
       case "character" =>
-        val character = obj.toCharacter
+        val character = obj.toCharacter(
+            id match {
+            	case Some(externalId) => FCharacter.findOneBy("externalId" -> externalId)
+            	case None => None
+            }
+        )
         character.saveOrUpdate(world = Option(session.world))
       case "artifact" =>
-        //val artifact
+        val artifact = obj.toArtifact(
+            id match {
+            	case Some(externalId) => FArtifact.findOneBy("externalId" -> externalId)
+            	case None => None
+            }
+        )
+        artifact.saveOrUpdate(world = Option(session.world))
+      case "affiliation" =>
+        val affiliation = obj.toAffiliation(
+            id match {
+            	case Some(externalId) => FAffiliation.findOneBy("externalId" -> externalId)
+            	case None => None
+            }
+        )
+        affiliation.saveOrUpdate(world = Option(session.world))
+      case "event" =>
+        val event = obj.toEvent(
+            id match {
+            	case Some(externalId) => FEvent.findOneBy("externalId" -> externalId)
+            	case None => None
+            }
+        )
+        event.saveOrUpdate(world = Option(session.world))
       case _ => throw new IllegalArgumentException("Invalid kind!")
     }
     

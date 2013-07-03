@@ -9,6 +9,8 @@ import com.fictaverse.web.resources.SignInResource
 import com.fictaverse.web.resources.SecretSignupResource
 import com.fictaverse.web.resources.GetKindsResource
 import com.fictaverse.web.resources.CreateFObjectResource
+import com.fictaverse.web.resources.FindByWorldResource
+import com.fictaverse.web.resources.FindResource
 
 object FictaWebService extends ScalaService[FictaWebConfig] {
   def initialize(boot: Bootstrap[FictaWebConfig]) = {
@@ -22,5 +24,7 @@ object FictaWebService extends ScalaService[FictaWebConfig] {
     env.addResource(new SecretSignupResource)
     env.addResource(new GetKindsResource)
     env.addResource(new CreateFObjectResource)
+    env.addResource(new FindByWorldResource)
+    env.addResource(new FindResource)
   }
 }

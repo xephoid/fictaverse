@@ -1,6 +1,6 @@
 <div id="sideNavigation">
 	<ul>
-		<% kinds.forEach(function(kind){ %>
+		<% kinds.forEach(function(kind) { %>
 		<li id="<%= kind[1] %>Nav" class="sideNavSection">
 			<a href="#">
 				<%= kind[0] %>
@@ -12,7 +12,7 @@
 			</div>
 			<script>
 			$("#<%= kind[1] %>Nav").click(function() {
-				hideAllSubNavs("#<%= kind[1] %>Contents");
+				hideAllSubNavs("<%= kind[1] %>");
 			});
 			$("#<%= kind[1] %>Add").click(function() {
 				$.get("add/<%= kind[1] %>", function(html) {
@@ -26,14 +26,25 @@
 </div>
 <script>
 $(function() {
-	hideAllSubNavs();
-	$("#<%= session.activeKind %>Contents").show();
+	hideAllSubNavs("<%= session.activeKind %>");
 });
 
 hideAllSubNavs = function(except) {
-	$(".subNav").hide();
+	$(".subNav").hide("blind");
 	if (except) {
-		$(except).show();
+		$.getJSON("list/" + except, function(data) {
+			$("#" +except+ "Contents ul li.fobject").remove();
+			$(data).each(function(index) {
+				var link = "<li class='fobject' fobjectId='" +this.id+ "'><a href='#'>" +this.name+ "</a></li>";
+				$("#" +except+ "Contents ul").append(link);
+			});
+			$("#" +except+ "Contents ul li.fobject").click(function() {
+				$.get("edit/" +except+ "/" + $(this).attr("fobjectId"), function(html) {
+					replaceEditContents(html);
+				});
+			});
+			$("#" + except + "Contents").show("blind");
+		});
 	}
 }
 

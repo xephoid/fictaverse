@@ -44,6 +44,7 @@ with FAssociableSuppliment {
     
     story.world = world.getOrElse(story.world)
     story.name = name.getOrElse(story.name)
+    
     updateDescribable(firstImpression, description)
     updateAliases(aliases)
     updateTags(tags)
@@ -75,5 +76,10 @@ with FAssociableSuppliment {
     }
     
     FStory.save(story)
+    
+    if (!story.world.stories.contains(story)) {
+      story.world.stories.add(story)
+      FWorld.save(story.world)
+    }
   }
 }

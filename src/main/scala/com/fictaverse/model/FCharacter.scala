@@ -17,7 +17,7 @@ with FMultiNamed
 with FAssociable
 with FActor {
 
-  val name = firstName + " " + lastName
+  def name = firstName + " " + lastName
   
   var firstName: String = null
   var middleName: String = null

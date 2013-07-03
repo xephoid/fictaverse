@@ -18,7 +18,42 @@ app.use(express.session());
 
 // End standard setup stuff
 
+app.param("kind", function(req, res, next, kind) {
+	if (req.kind = kind) {
+		next();
+	} else {
+		next(new Error('failed to find kind!'));
+	}
+});
+
+app.param("id", function(req, res, next, id) { 
+	api.makeRequest(
+		"GET",
+		"find",
+		"sessionId=" + req.session.sessionId + "&kind=" + req.kind + "&id=" + id,
+		function(data) {
+			console.log(data);
+			req.session.obj = data;
+			next();
+		},
+		function(error) {
+			console.log("Error getting single object!");
+			console.log(error);
+			next();
+		}
+	);
+});
+
+var routes = [
+	"./routes/addEdit",
+	"./routes/list",
+	"./routes/index",
+	"./routes/login",
+	"./routes/logout"
+];
+
 require("./routes/addEdit")(app, { "api" : api });
+require("./routes/list")(app, { "api" : api });
 require("./routes/index") (app, { "api" : api });
 require("./routes/login") (app, { "api" : api });
 require("./routes/logout")(app, { "api" : api });

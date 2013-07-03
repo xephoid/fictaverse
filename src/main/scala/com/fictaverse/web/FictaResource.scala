@@ -21,7 +21,7 @@ trait FictaResource extends FictaLogging with FObjectTransactions {
   
   def validateSession(sessionId: Option[String]) = {
     require(sessionId.isDefined, "Session is missing!")
-    val session = FSession.findOneBy("externalId" -> sessionId.get, "state" -> FSessionState.active.toString).getOrElse {
+    val session = FSession.findOneBy("externalId" -> sessionId.get, "state" -> FSessionState.active).getOrElse {
       throw new IllegalArgumentException("Invalid session!")
     }
     require(FSession.isActive(session), "Session is expired!")

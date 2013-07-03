@@ -21,6 +21,10 @@ class FSession extends FObject {
   
   @Reference
   var world: FWorld = null
+  
+  def save() {
+    FSession.save(this)
+  }
 }
 
 object FSession extends FictaDAO[FSession] {

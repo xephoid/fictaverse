@@ -32,19 +32,22 @@ class FindByWorldResource extends FictaResource {
     require(kind.isDefined, "Kind is missing!")
     val session = validateSession(sessionId)
     val world = session.world
+    session.activeKind = kind.get
+    session.save()
+    
     kind.get match {
       case "world" => List(FObjectDto(world))
-      case "story" => world.stories.map(FObjectDto(_)).toList
-      case "location" => doFind(world.id.toString, FLocation)
-      case "character" => doFind(world.id.toString, FCharacter)
-      case "artifact" => doFind(world.id.toString, FArtifact)
-      case "affiliation" => doFind(world.id.toString, FAffiliation)
-      case "event" => doFind(world.id.toString, FEvent)
+      case "story" => doFind(world, FStory)
+      case "location" => doFind(world, FLocation)
+      case "character" => doFind(world, FCharacter)
+      case "artifact" => doFind(world, FArtifact)
+      case "affiliation" => doFind(world, FAffiliation)
+      case "event" => doFind(world, FEvent)
       case _ => List(FErrorDto("Invalid kind!"))
     }
   }
   
-  private def doFind[T <: FObject](worldId: String, dao: FictaDAO[T]) = {
-    dao.findBy("world.$id" -> worldId).getOrElse(new ArrayList[T]).map(FObjectDto(_)).toList
+  private def doFind[T <: FObject](world: FWorld, dao: FictaDAO[T]) = {
+    dao.findBy("world" -> world).getOrElse(new ArrayList[T]).map(FObjectDto(_)).toList
   }
 }

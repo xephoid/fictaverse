@@ -16,6 +16,9 @@ import com.google.code.morphia.annotations.Entity
 import scala.collection.JavaConversions._
 import com.fictaverse.model.FLocation
 import com.fictaverse.model.FCharacter
+import com.fictaverse.model.FArtifact
+import com.fictaverse.model.FAffiliation
+import com.fictaverse.model.FEvent
 
 case class FObjectDto(
     override val kind: String,
@@ -33,16 +36,16 @@ case class FObjectDto(
     lastName: String = null
 ) extends FictaWebDto(kind) {
   
-  def toWorld = {
-    val world = new FWorld
+  def toWorld(w: Option[FWorld]) = {
+    val world = w.getOrElse(new FWorld)
     world.name = name
     world.description = description
     world.firstImpression = firstImpression
     world
   }
   
-  def toStory: FStory = {
-    val story = new FStory
+  def toStory(s: Option[FStory]): FStory = {
+    val story = s.getOrElse(new FStory)
     story.world = getWorld
     story.name = name
     setDescribabble(story) 
@@ -51,8 +54,8 @@ case class FObjectDto(
     story
   }
   
-  def toLocation: FLocation = {
-    val location = new FLocation
+  def toLocation(l: Option[FLocation]): FLocation = {
+    val location = l.getOrElse(new FLocation)
     location.world = getWorld
     location.name = name
     setDescribabble(location)
@@ -61,16 +64,45 @@ case class FObjectDto(
     location
   }
   
-  def toCharacter: FCharacter = {
-    val character = new FCharacter
+  def toCharacter(c: Option[FCharacter]): FCharacter = {
+    val character = c.getOrElse(new FCharacter)
     character.world = getWorld
     character.firstName = firstName
     character.lastName = lastName
     setDescribabble(character)
     setAliases(character)
     setTags(character)
-    
     character
+  }
+  
+  def toArtifact(a: Option[FArtifact]): FArtifact = {
+    val artifact = a.getOrElse(new FArtifact)
+    artifact.world = getWorld
+    artifact.name = name
+    setDescribabble(artifact)
+    setAliases(artifact)
+    setTags(artifact)
+    artifact
+  }
+  
+  def toAffiliation(a: Option[FAffiliation]): FAffiliation = {
+    val affiliation = a.getOrElse(new FAffiliation)
+    affiliation.world = getWorld
+    affiliation.name = name
+    setDescribabble(affiliation)
+    setAliases(affiliation)
+    setTags(affiliation)
+    affiliation
+  }
+  
+  def toEvent(e: Option[FEvent]): FEvent = {
+    val event = e.getOrElse(new FEvent)
+    event.world = getWorld
+    event.name = name
+    setDescribabble(event)
+    setAliases(event)
+    setTags(event)
+    event
   }
   
   private def getWorld: FWorld = {
@@ -134,8 +166,6 @@ object FObjectDto extends FictaLogging {
       List()
     }
     
-    val name = getFieldValueIfExists[String]("name", obj).getOrElse(null)
-    
     val world = getFieldValueIfExists[FWorld]("world", obj)
     val worldId = if (world.isDefined) {
       world.get.externalId
@@ -146,7 +176,9 @@ object FObjectDto extends FictaLogging {
     val firstName = getFieldValueIfExists[String]("firstName", obj).getOrElse(null)
     val lastName = getFieldValueIfExists[String]("lastName", obj).getOrElse(null)
     
-    FObjectDto(obj.kind, obj.externalId, worldId, name, description, firstImpression, aliases, associations, tags)
+    val name = getFieldValueIfExists[String]("name", obj).getOrElse(firstName + " " + lastName)
+    
+    FObjectDto(obj.kind, obj.externalId, worldId, name, description, firstImpression, aliases, associations, tags, firstName, lastName)
   }
   
   private def getFieldValueIfExists[T](fieldName: String, obj: FObject): Option[T] = {
