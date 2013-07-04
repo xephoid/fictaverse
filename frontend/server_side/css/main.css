@@ -5,6 +5,23 @@ body {
 	background-color: #eee;
 }
 
+img, a:link img, a:visited img, a:hover img, a:active img {
+	text-decoration: none !important;
+	border: none !important;
+}
+
+.active-true {
+	display: block;
+}
+
+.active-false {
+	display: none;
+}
+
+.multi-item-section {
+	width: 500px;
+}
+
 #worldHeader {
 	font-size: 24px;
 	width: 100%;
@@ -31,4 +48,10 @@ body {
 
 #editHeader {
 	font-size: 24px;
+}
+
+#logoutButton {
+	padding-top: 25px;
+	padding-right: 50px;
+	float: right;
 }

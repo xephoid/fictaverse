@@ -1,9 +1,19 @@
 <% include snippets/addEditHeader.html %>
+<div n-app="components">
+	<tabs>
+		<pane title="Info">
+		<% include snippets/nameSnippet.html %>
 
-<% include snippets/nameSnippet.html %>
+		<% include snippets/multiNamedSnippet.html %>
 
-<% include snippets/multiNamedSnippet.html %>
+		<% include snippets/taggableSnippet.html %>
 
-<% include snippets/describableSnippet.html %>
+		<% include snippets/describableSnippet.html %>
+		
+		</pane>
+		<pane title="Locations">
+		</pane>
+	</tabs>
+</div>
 
 <% include snippets/addEditFooter.html %>

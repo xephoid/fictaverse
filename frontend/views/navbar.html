@@ -1,54 +1,60 @@
-<div id="sideNavigation">
-	<ul>
-		<% kinds.forEach(function(kind) { %>
-		<li id="<%= kind[1] %>Nav" class="sideNavSection">
-			<a href="#">
-				<%= kind[0] %>
-			</a>
-			<div id="<%= kind[1] %>Contents" class="subNav">
-				<ul>
-					<li><a id="<%= kind[1] %>Add" href="#">Add <%= kind[1] %></a></li>
-				</ul>
-			</div>
-			<script>
-			$("#<%= kind[1] %>Nav").click(function() {
-				hideAllSubNavs("<%= kind[1] %>");
-			});
-			$("#<%= kind[1] %>Add").click(function() {
-				$.get("add/<%= kind[1] %>", function(html) {
-					replaceEditContents(html);
-				});
-			});
-			</script>
-		</li>
-		<% }) %>
-	</ul>
-</div>
 <script>
-$(function() {
-	hideAllSubNavs("<%= session.activeKind %>");
-});
-
-hideAllSubNavs = function(except) {
-	$(".subNav").hide("blind");
-	if (except) {
-		$.getJSON("list/" + except, function(data) {
-			$("#" +except+ "Contents ul li.fobject").remove();
-			$(data).each(function(index) {
-				var link = "<li class='fobject' fobjectId='" +this.id+ "'><a href='#'>" +this.name+ "</a></li>";
-				$("#" +except+ "Contents ul").append(link);
-			});
-			$("#" +except+ "Contents ul li.fobject").click(function() {
-				$.get("edit/" +except+ "/" + $(this).attr("fobjectId"), function(html) {
-					replaceEditContents(html);
+function NavCtrl($scope, $http) {
+	$scope.kindList = <%- JSON.stringify(kinds) %>;
+	
+	$scope.rebuildKinds = function(activeKind) {
+		$scope.kinds = [];
+		$scope.data = [];
+		$($scope.kindList).each(function() {
+			var active = (this[1] == activeKind);
+			var kind = {
+				displayName: this[0],
+				name: this[1],
+				active: active
+			};
+			if (active) {
+				$http.get("list/" + kind.name).success(function(data) {
+					$scope.data = data;
 				});
-			});
-			$("#" + except + "Contents").show("blind");
+			}
+			$scope.kinds.push(kind);
 		});
 	}
-}
-
-replaceEditContents = function(html) {
-	$("#editContainer").html(html);
+	
+	$scope.selectKind = function(kind) {
+		$scope.rebuildKinds(kind.name);
+	}
+	
+	$scope.addKind = function(kind) {
+		$http.get("add/" + kind.name).success(function(html) {
+			$("#editContainer").html(html);
+			angular.bootstrap($("#editContainer"));
+		});
+	}
+	
+	$scope.editKind = function(obj) {
+		$http.get("edit/" + obj.kind + "/" + obj.id).success(function(html) {
+			$("#editContainer").html(html);
+			angular.bootstrap($("#editContainer"));
+		});
+	}
+	
+	$scope.rebuildKinds("<%= session.activeKind %>");
 }
 </script>
+
+<div id="sideNavigation" ng-controller="NavCtrl">
+	<ul>
+		<li ng-repeat="kind in kinds" class="sideNavSection">
+			<a href="#" ng-click="selectKind(this.kind)">{{ kind.displayName }}</a>
+			<div id="{{ kind.name }}Contents" class="subNav active-{{ kind.active }}">
+				<ul>
+					<li><a id="{{ kind.name }}Add" href="#" ng-click="addKind(this.kind)">Add {{ kind.name }}</a></li>
+					<li ng-repeat="obj in data">
+						<a href='#' ng-click="editKind(this.obj)">{{ obj.name }}</a>
+					</li>
+				</ul>
+			</div>
+		</li>
+	</ul>
+</div>

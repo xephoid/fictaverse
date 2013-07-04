@@ -1,14 +1,11 @@
 <% include snippets/addEditHeader.html %>
-		<tr>
-			<td>First Name: </td>
-			<td><input name="firstName" value="<%= obj.firstName %>" /></td>
-		</tr>
-		<tr>
-			<td>Last Name: </td>
-			<td><input name="lastName" value="<%= obj.lastName %>" /></td>
-		</tr>
+
+<% include snippets/nameSnippet.html %>
+
 <% include snippets/multiNamedSnippet.html %>
+
 <% include snippets/taggableSnippet.html %>
 
 <% include snippets/describableSnippet.html %>
+
 <% include snippets/addEditFooter.html %>

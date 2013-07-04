@@ -62,6 +62,7 @@ require("./routes/logout")(app, { "api" : api });
 app.use(express.static(__dirname + "/server_side"));
 app.use(express.static(__dirname + "/server_side/js"));
 app.use(express.static(__dirname + "/server_side/css"));
+app.use(express.static(__dirname + "/server_side/img"));
 
 //you may `app.use(app.router)` before or after these
 //static() middleware. If placed before them your routes

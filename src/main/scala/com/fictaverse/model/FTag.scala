@@ -15,6 +15,20 @@ class FTag extends FObject {
   
   @Reference
   var tagged: JList[FTaggable] = new ArrayList[FTaggable]
+  
+  def addTaggable(taggable: FTaggable) {
+    tagged.add(taggable)
+    FTag.save(this)
+  }
 }
 
-object FTag extends FictaDAO[FTag]
+object FTag extends FictaDAO[FTag] {
+  def getOrCreateTag(name: String): FTag = {
+    FTag.findOneBy("name" -> name).getOrElse {
+      val tag = new FTag
+      tag.name = name
+      FTag.save(tag) 
+      tag
+    }
+  }
+}

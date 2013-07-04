@@ -1,15 +1,36 @@
-<tr>
-	<td><label for="aliasesField">Aliases: </label></td>
+<script>
+function MultiNamedCtrl($scope) {
+	
+	$scope.aliases = <%- JSON.stringify(obj.aliases) %>;
+
+	$scope.addAlias = function() {
+		if ($scope.newAlias.length > 0) {
+			$scope.aliases.push($scope.newAlias);
+			$scope.newAlias = '';
+		}
+	};
+	
+	$scope.removeAlias = function(link) {
+		var index = $scope.aliases.indexOf(link.alias);
+		$scope.aliases.splice(index, 1);
+	};
+}
+</script>
+<tr ng-controller="MultiNamedCtrl">
+	<td><label for="newAlias">Aliases: </label></td>
 	<td>
-		<input id="aliasesField" value="<%= obj.aliases.toString() %>" />
+		<div class="multi-item-section">
+			<span ng-repeat="alias in aliases">
+				<span>{{ alias }}</span>
+				<a href="#" ng-click="removeAlias(this)"><img alt="[X]" src="img/soft-delete.gif" /></a>
+				<input type="hidden" name="aliases[]" value="{{alias}}"/>
+				&nbsp;&nbsp;
+			</span>
+			<span>{{ newAlias }}</span>
+		</div>
+		<div>
+			<input id="newAlias" type="text" ng-model="newAlias" placeholder="Type alias..." />
+			<input type="button" value="add" ng-click="addAlias()">
+		</div>
 	</td>
-	<script>
-	$("#aliasesField").change(function() {
-		$(".alias").remove();
-		var aliases = $(this).val().split(",");
-		$(aliases).each(function (index) {
-			$("#addEditForm").append("<input type='hidden' class='alias' name='aliases[]' value='" + aliases[index].trim() + "' />");
-		});
-	});
-	</script>
 </tr>

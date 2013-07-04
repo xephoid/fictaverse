@@ -1,0 +1,15 @@
+<tr>
+	<td><label for="tagsField">Tags: </label></td>
+	<td>
+		<input id="tagsField" value="<%= obj.tags.toString() %>" />
+	</td>
+	<script>
+	$("#tagsField").change(function() {
+		$(".tag").remove();
+		var tags = $(this).val().split(",");
+		$(tags).each(function (index) {
+			$("#addEditForm").append("<input type='hidden' class='tag' name='tags[]' value='" + tags[index].trim() + "' />");
+		});
+	});
+	</script>
+</tr>

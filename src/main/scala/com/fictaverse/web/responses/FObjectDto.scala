@@ -19,6 +19,7 @@ import com.fictaverse.model.FCharacter
 import com.fictaverse.model.FArtifact
 import com.fictaverse.model.FAffiliation
 import com.fictaverse.model.FEvent
+import com.fictaverse.model.FAction
 
 case class FObjectDto(
     override val kind: String,
@@ -33,7 +34,10 @@ case class FObjectDto(
 
     /* Character specific */
     firstName: String = null,
-    lastName: String = null
+    lastName: String = null,
+    
+    /* Event Specific */
+    action: String = null
 ) extends FictaWebDto(kind) {
   
   def toWorld(w: Option[FWorld]) = {
@@ -99,6 +103,7 @@ case class FObjectDto(
     val event = e.getOrElse(new FEvent)
     event.world = getWorld
     event.name = name
+    event.action = FAction.getOrCreate(action)
     setDescribabble(event)
     setAliases(event)
     setTags(event)
@@ -130,14 +135,10 @@ case class FObjectDto(
     if (Option(tags).isDefined) {
     	taggable.tags = tags.foldLeft(new ArrayList[FTag]) {
     		(list, tag) =>
-    			val ftag = FTag.findOneBy("name" -> tag).getOrElse {
-    			val newtag = new FTag
-    			newtag.name = tag
-    			// TODO: save!
-    			newtag
-    		}
-    		list.add(ftag)
-    		list
+    		  val ftag = FTag.getOrCreateTag(tag)
+    		  ftag.addTaggable(taggable)
+    		  list.add(ftag)
+    		  list
     	}
     }
   }
@@ -175,10 +176,16 @@ object FObjectDto extends FictaLogging {
     
     val firstName = getFieldValueIfExists[String]("firstName", obj).getOrElse(null)
     val lastName = getFieldValueIfExists[String]("lastName", obj).getOrElse(null)
+    val action = getFieldValueIfExists[FAction]("action", obj)
+    val actionName = if (action.isDefined) {
+      action.get.name
+    } else {
+      null
+    }
     
     val name = getFieldValueIfExists[String]("name", obj).getOrElse(firstName + " " + lastName)
     
-    FObjectDto(obj.kind, obj.externalId, worldId, name, description, firstImpression, aliases, associations, tags, firstName, lastName)
+    FObjectDto(obj.kind, obj.externalId, worldId, name, description, firstImpression, aliases, associations, tags, firstName, lastName, actionName)
   }
   
   private def getFieldValueIfExists[T](fieldName: String, obj: FObject): Option[T] = {
